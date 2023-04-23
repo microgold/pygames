@@ -59,7 +59,7 @@ while True:
     else:
         screen.blit(pygame.image.load("resources/smiley.png"),
                     (screen.get_width()/2 - 16,
-                     (screen.get_height() - text.get_height()) / 2 - 10 - 50))
+                     (screen.get_height() - text.get_height()) / 2 - 60))
 
     # blit the text surface to the screen
     screen.blit(text, ((screen.get_width() - text.get_width()) /
