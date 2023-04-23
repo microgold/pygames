@@ -1,4 +1,4 @@
-# HelloWorldPygame.py
+# HelloWorld.py
 
 # def PrintHelloWorldTenTimes():
 #    for num in range(1, 11):

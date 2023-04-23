@@ -140,7 +140,7 @@ def handle_mouse_down_for_X():
     (col, row) = pygame.mouse.get_pos()
     row = int(row / grid_width)
     col = int(col / grid_height)
-    board.PlaceX(row, col)
+    board.place_X(row, col)
     letterX = LetterSprite('X', col, row, grid_height, grid_width)
     group.add(letterX)
 
