@@ -129,11 +129,11 @@ def run_better_algorithm_to_place_O():
             board[center][center] = "O"
             return True
         else:
-            for r, c in [(0, 0), (0, grid_size - 1), 
+            for row, col in [(0, 0), (0, grid_size - 1), 
                          (grid_size - 1, 0), 
                          (grid_size - 1, grid_size - 1)]:
-                if board[r][c] == 0:
-                    board[r][c] = "O"
+                if board[row][col] == 0:
+                    board[row][col] = "O"
                     return True
 
     # Try to win or block X from winning
@@ -157,11 +157,11 @@ def run_better_algorithm_to_place_O():
         or board[0][grid_size - 1] == "O" \
         or board[grid_size - 1][0] == "O" \
         or board[grid_size - 1][grid_size - 1] == "O":
-        for r, c in [(0, 0), (0, grid_size - 1), 
+        for row, col in [(0, 0), (0, grid_size - 1), 
                      (grid_size - 1, 0), 
                      (grid_size - 1, grid_size - 1)]:
-            if board[r][c] == 0:
-                board[r][c] = "O"
+            if board[row][col] == 0:
+                board[row][col] = "O"
                 return True
 
     # Place "O" in a non-corner side
