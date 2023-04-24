@@ -69,12 +69,12 @@ class GameBoard:
                 self.board[center][center] = "O"
                 return (True, center, center)
             else:
-                for r, c in [(0, 0), (0, grid_size - 1), 
+                for row, col in [(0, 0), (0, grid_size - 1), 
                             (grid_size - 1, 0), 
                             (grid_size - 1, grid_size - 1)]:
-                    if self.board[r][c] == 0:
-                        self.board[r][c] = "O"                        
-                        return (True, r, c)
+                    if self.board[row][col] == 0:
+                        self.board[row][col] = "O"                        
+                        return (True, row, col)
 
         # Try to win or block X from winning
         for row, col in empty_positions:
@@ -97,13 +97,13 @@ class GameBoard:
             or self.board[0][grid_size - 1] == "O" \
             or self.board[grid_size - 1][0] == "O" \
             or self.board[grid_size - 1][grid_size - 1] == "O":
-            for r, c in [(0, 0), (0, grid_size - 1), 
+            for row, col in [(0, 0), (0, grid_size - 1), 
                         (grid_size - 1, 0), 
                         (grid_size - 1, grid_size - 1)]:
-                if self.board[r][c] == 0:
-                    self.board[r][c] = "O"
-                    (True, r, c)
-                    return (True, r, c)
+                if self.board[row][col] == 0:
+                    self.board[row][col] = "O"
+                    (True, row, col)
+                    return (True, row, col)
 
         # Place "O" in a non-corner side
         for row, col in empty_positions:
