@@ -79,12 +79,102 @@ game_window = initialize_game()
 ####################################################
 # A very simple algorithm to place O on the board
 ####################################################
-def run_algorithm_to_place_o():
-    for rowo in range(grid_size):
-        for colo in range(grid_size):
-            if (board[rowo][colo] == 0):
-                board[rowo][colo] = "O"
+# def run_algorithm_to_place_o():
+#     for rowo in range(grid_size):
+#         for colo in range(grid_size):
+#             if (board[rowo][colo] == 0):
+#                 board[rowo][colo] = "O"
+#                 return True
+
+#     return False
+
+def is_winning_move(player, row, col):
+    n = len(board)
+    # Check row
+    if all(board[row][j] == player for j in range(n)):
+        return True
+    # Check column
+    if all(board[i][col] == player for i in range(n)):
+        return True
+    # Check main diagonal
+    if row == col and all(board[i][i] == player for i in range(n)):
+        return True
+    # Check secondary diagonal
+    if row + col == n - 1 and all(board[i][n - i - 1] == player for i in range(n)):
+        return True
+    return False
+
+
+def get_empty_positions():
+    empty_positions = []
+    for i, row in enumerate(board):
+        for j, cell in enumerate(row):
+            if cell == 0:
+                empty_positions.append((i, j))
+    return empty_positions
+
+#####################################################
+# a more advanced algorithm to place O on the board #
+#####################################################
+def run_better_algorithm_to_place_O():
+    grid_size = len(board)
+    empty_positions = get_empty_positions()
+    num_moves = sum(1 for row in board for 
+                    cell in row if cell != 0)
+
+    # Second move: Place "O" in center or corner
+    if num_moves == 1:
+        center = grid_size // 2
+        if board[center][center] == 0:
+            board[center][center] = "O"
+            return True
+        else:
+            for r, c in [(0, 0), (0, grid_size - 1), 
+                         (grid_size - 1, 0), 
+                         (grid_size - 1, grid_size - 1)]:
+                if board[r][c] == 0:
+                    board[r][c] = "O"
+                    return True
+
+    # Try to win or block X from winning
+    for row, col in empty_positions:
+        # Check if placing "O" would win the game
+        board[row][col] = "O"
+        if is_winning_move("O", row, col):
+            return True
+        board[row][col] = 0
+
+    # Check if placing "O" would block X from winning
+    for row, col in empty_positions:
+        board[row][col] = "X"
+        if is_winning_move("X", row, col):
+            board[row][col] = "O"
+            return True
+        board[row][col] = 0
+
+    # Place "O" in a corner if it started in a corner
+    if board[0][0] == "O" \
+        or board[0][grid_size - 1] == "O" \
+        or board[grid_size - 1][0] == "O" \
+        or board[grid_size - 1][grid_size - 1] == "O":
+        for r, c in [(0, 0), (0, grid_size - 1), 
+                     (grid_size - 1, 0), 
+                     (grid_size - 1, grid_size - 1)]:
+            if board[r][c] == 0:
+                board[r][c] = "O"
                 return True
+
+    # Place "O" in a non-corner side
+    for row, col in empty_positions:
+        if row not in [0, grid_size - 1] \
+           and col not in [0, grid_size - 1]:
+            board[row][col] = "O"
+            return True
+
+    # Place "O" in any available space
+    for row, col in empty_positions:
+        board[row][col] = "O"
+        return True
 
     return False
 
@@ -281,7 +371,7 @@ while True:
         if X_placed:
             # Wait for 1/2 second to make it look like AI is thinking
             pygame.time.delay(500)
-            O_placed = run_algorithm_to_place_o()
+            O_placed = run_better_algorithm_to_place_O()
             game_over = check_if_anyone_won()
             draw_the_board()  # Draw the board again to show the O
             X_placed = False
