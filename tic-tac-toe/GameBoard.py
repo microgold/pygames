@@ -19,14 +19,105 @@ class GameBoard:
     # A very simple algorithm to place O on the board
     ####################################################
 
-    def run_algorithm_to_place_O(self):
-        for rowo in range(self.grid_size):
-            for colo in range(self.grid_size):
-                if (self.board[rowo][colo] == 0):
-                    self.board[rowo][colo] = "O"
-                    return (True, rowo, colo)
+    # def run_algorithm_to_place_O(self):
+    #     for rowo in range(self.grid_size):
+    #         for colo in range(self.grid_size):
+    #             if (self.board[rowo][colo] == 0):
+    #                 self.board[rowo][colo] = "O"
+    #                 return (True, rowo, colo)
 
-        return (False, -1, -1)
+    #     return (False, -1, -1)
+
+    def is_winning_move(self, player, row, col):
+        n = len(self.board)
+        # Check row
+        if all(self.board[row][j] == player for j in range(n)):
+            return True
+        # Check column
+        if all(self.board[i][col] == player for i in range(n)):
+            return True
+        # Check main diagonal
+        if row == col and all(self.board[i][i] == player for i in range(n)):
+            return True
+        # Check secondary diagonal
+        if row + col == n - 1 and all(self.board[i][n - i - 1] == player for i in range(n)):
+            return True
+        return False
+
+
+    def get_empty_positions(self):
+        empty_positions = []
+        for i, row in enumerate(self.board):
+            for j, cell in enumerate(row):
+                if cell == 0:
+                    empty_positions.append((i, j))
+        return empty_positions
+
+#####################################################
+# a more advanced algorithm to place O on the board #
+#####################################################
+    def run_better_algorithm_to_place_O(self):
+        grid_size = len(self.board)
+        empty_positions = self.get_empty_positions()
+        num_moves = sum(1 for row in self.board for 
+                        cell in row if cell != 0)
+
+        # Second move: Place "O" in center or corner
+        if num_moves == 1:
+            center = grid_size // 2
+            if self.board[center][center] == 0:
+                self.board[center][center] = "O"
+                return (True, center, center)
+            else:
+                for r, c in [(0, 0), (0, grid_size - 1), 
+                            (grid_size - 1, 0), 
+                            (grid_size - 1, grid_size - 1)]:
+                    if self.board[r][c] == 0:
+                        self.board[r][c] = "O"                        
+                        return (True, r, c)
+
+        # Try to win or block X from winning
+        for row, col in empty_positions:
+            # Check if placing "O" would win the game
+            self.board[row][col] = "O"
+            if self.is_winning_move("O", row, col):
+                return (True, row, col)
+            self.board[row][col] = 0
+
+        # Check if placing "O" would block X from winning
+        for row, col in empty_positions:
+            self.board[row][col] = "X"
+            if self.is_winning_move("X", row, col):
+                self.board[row][col] = "O"
+                return (True, row, col)
+            self.board[row][col] = 0
+
+        # Place "O" in a corner if it started in a corner
+        if self.board[0][0] == "O" \
+            or self.board[0][grid_size - 1] == "O" \
+            or self.board[grid_size - 1][0] == "O" \
+            or self.board[grid_size - 1][grid_size - 1] == "O":
+            for r, c in [(0, 0), (0, grid_size - 1), 
+                        (grid_size - 1, 0), 
+                        (grid_size - 1, grid_size - 1)]:
+                if self.board[r][c] == 0:
+                    self.board[r][c] = "O"
+                    (True, r, c)
+                    return (True, r, c)
+
+        # Place "O" in a non-corner side
+        for row, col in empty_positions:
+            if row not in [0, grid_size - 1] \
+            and col not in [0, grid_size - 1]:
+                self.board[row][col] = "O"
+                return (True, row, col)
+
+        # Place "O" in any available space
+        for row, col in empty_positions:
+            self.board[row][col] = "O"
+            return (True, row, col)
+
+        return (False, -1, -1)    
 
 ####################################################
 # Check if someone won in any row, column or diagonal

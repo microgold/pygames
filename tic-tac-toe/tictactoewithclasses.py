@@ -218,7 +218,7 @@ while True:
         if X_placed:
             # Wait for 1/2 second to make it look like AI is thinking
             pygame.time.delay(500)
-            (O_placed, rowo, colo) = board.run_algorithm_to_place_O()
+            (O_placed, rowo, colo) = board.run_better_algorithm_to_place_O()
             if O_placed:
                 letterO = LetterSprite(
                     'O', colo, rowo, grid_width, grid_height)
